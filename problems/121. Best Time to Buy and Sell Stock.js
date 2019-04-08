@@ -26,15 +26,35 @@
  * @return {number}
  */
 var maxProfit = function(prices) {
-  let profit = 0
-  let min = Infinity
-  prices.forEach(e => {
-    if(e < min) {
-      min = e
-    }
-    if(e - min > profit) {
-      profit = e - min
-    }
-  })
-  return profit
+  // dp
+  // 用一个状态数组存储第i天的最大获利
+  // 状态转移方程：max[i] = Math.max(0, max[i-1] + prices[i] - prices[i - 1])
+  let max = [0]
+
+  for(let i = 1, len = prices.length; i < len; i++) {
+    let cur = max[i - 1] + (prices[i] - prices[i - 1])
+    max[i] = Math.max(0, cur)
+  }
+
+  return Math.max.apply(undefined, max)
 };
+
+// O(n)
+
+// var maxProfit = function(prices) {
+//   let min = 0
+//   let result = 0
+//   for(let i = 0, len = prices.length; i < len; i++) {
+//     if(i === 0) {
+//       min = prices[i]
+//       continue
+//     }
+//     if(prices[i] >= min) {
+//       result = Math.max(prices[i] - min, result)
+//     }else {
+//       min = prices[i]
+//     }
+//   }
+
+//   return result
+// };
