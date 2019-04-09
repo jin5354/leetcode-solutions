@@ -13,29 +13,36 @@
 //   [3,2,1]
 // ]
 
-// backtracking
+// dfs + backtracking
 
 /**
  * @param {number[]} nums
  * @return {number[][]}
  */
 var permute = function(nums) {
-  let result = []
+  // dfs
 
-  function _walk(exists, rest) {
-    if(!rest.length) {
-      result.push(exists)
+  let result = []
+  let tmp = []
+  let len = nums.length
+
+  function dfs(candidates) {
+    // 终止条件
+    if(candidates.length === 0) {
+      result.push(tmp.slice())
       return
     }
-    rest.forEach((e, i) => {
-      let t = rest.slice()
-      t.splice(i, 1)
-      _walk(exists.concat(e), t)
-    })
+
+    for(let i = 0; i < candidates.length; i++) {
+      tmp.push(candidates[i])
+      let newCandidates = candidates.slice()
+      newCandidates.splice(i, 1)
+      dfs(newCandidates)
+      tmp.pop()
+    }
   }
 
-  if(nums.length) {
-    _walk([], nums)
-  }
+  dfs(nums.slice())
+
   return result
 };
