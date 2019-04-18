@@ -16,26 +16,44 @@
  * @return {number}
  */
 var lengthOfLongestSubstring = function(s) {
-  let map = {}
-  let head = 0
-  let end = 0
-  let max = 0
-  let len = s.length
+  //dp
+  //状态定义 dp[i] = 以s[i] 为结尾的最长子序列
+  //同时使用一个 hashmap 来存储当前最长子序列的各个字母及位置
+  //如果 s[i] 和 dp[i-1] 的最长子序列没有重复
+  //dp[i] = dp[i - 1] + 1, hashmap add s[i]-i
+  //如果有重复
+  //dp[i] = i - hashmap[nums[i]], hashmap 移除所有 value 小于 hashmap[nums[i]] 的元素
+  //O(n)
 
-  while(end <= len) {
-    let char = s[end]
-    if(map[char] === undefined || map[char] < head) {
-      map[char] = end
-      end++
-      if(end === len) {
-        max = Math.max(max, end - head)
-      }
+  let dp = []
+  let len = s.length
+  let hashMap = {}
+  let max = 0
+  let start = 0
+
+  // edge case
+  if(len === 0) {
+    return 0
+  }
+
+  // init
+  dp[0] = 1
+  hashMap[s[0]] = 0
+  max = 1
+
+  for(let i = 1; i < len; i++) {
+    if(hashMap[s[i]] === undefined) {
+      dp[i] = dp[i - 1] + 1
     }else {
-      max = Math.max(max, end - head)
-      head = map[char] + 1
-      map[char] = end
-      end++
+      let prevIndex = hashMap[s[i]]
+      dp[i] = i - prevIndex
+      for(let j = start; j <= prevIndex; j++) {
+        delete hashMap[s[j]]
+      }
+      start = prevIndex + 1
     }
+    hashMap[s[i]] = i
+    max = Math.max(max, dp[i])
   }
 
   return max
